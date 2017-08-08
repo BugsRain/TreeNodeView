@@ -11,5 +11,5 @@ public interface OnTreeNodeClickListener<T> {
         Close
     }
 
-    void onClick(TreeNode<T> node, TreeAdapter adapter, int position, TreeNodeExpandState state);
+    void onClick(TreeNode<T> node, TreeAdapter<T> adapter, int position, TreeNodeExpandState state);
 }

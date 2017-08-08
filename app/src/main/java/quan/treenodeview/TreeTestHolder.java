@@ -17,7 +17,7 @@ public class TreeTestHolder extends TreeHolder<Bean> {
 
     public TreeTestHolder(View itemView) {
         super(itemView);
-        this.textView = (TextView) itemView.findViewById(R.id.item_tree_txt);
+        this.textView = itemView.findViewById(R.id.item_tree_txt);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class TreeTestHolder extends TreeHolder<Bean> {
         }
 
         if(node.isParent()){
-            if(node.isExtent()){
+            if(node.isExpand()){
                 paddingString+="-";
             }else{
                 paddingString+="+";

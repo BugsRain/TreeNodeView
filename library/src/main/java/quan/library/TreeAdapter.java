@@ -22,11 +22,9 @@ public abstract class TreeAdapter<T> extends RecyclerView.Adapter<TreeHolder<T>>
     private boolean expandAnimation;
 
     public TreeAdapter(List<T> beans) {
-        this.initData(beans, 0);
+        this.initData(beans, 0, true);
         this.expandAnimation = true;
-
     }
-
 
     @Override
     final public int getItemCount() {
@@ -51,16 +49,18 @@ public abstract class TreeAdapter<T> extends RecyclerView.Adapter<TreeHolder<T>>
                 TreeAdapter<T> adapter = TreeAdapter.this;
 
                 if(node.isParent()){
-                    if(node.isExtent()){
-                        adapter.hideData(pos, node);
+                    if(node.isExpand()){
                         if(adapter.listener != null){
                             adapter.listener.onClick(node, adapter, pos, OnTreeNodeClickListener.TreeNodeExpandState.Close);
                         }
+                        adapter.hideData(pos, node);
+
                     }else{
-                        adapter.showData(pos, node);
                         if(adapter.listener != null){
                             adapter.listener.onClick(node, adapter, pos, OnTreeNodeClickListener.TreeNodeExpandState.Expand);
                         }
+                        adapter.showData(pos, node);
+
                     }
                 }else{
                     if(adapter.listener != null){
@@ -75,9 +75,16 @@ public abstract class TreeAdapter<T> extends RecyclerView.Adapter<TreeHolder<T>>
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
-        recyclerView.getItemAnimator().setAddDuration(200);
-        recyclerView.getItemAnimator().setRemoveDuration(200);
-        recyclerView.getItemAnimator().setChangeDuration(200);
+        recyclerView.getItemAnimator().setAddDuration(150);
+        recyclerView.getItemAnimator().setRemoveDuration(150);
+        recyclerView.getItemAnimator().setChangeDuration(150);
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        this.nodes.clear();
+        this.nodes = null;
     }
 
     public void setListener(OnTreeNodeClickListener<T> listener) {
@@ -86,7 +93,7 @@ public abstract class TreeAdapter<T> extends RecyclerView.Adapter<TreeHolder<T>>
 
     private void hideData(int start, TreeNode<T> node){
 
-        node.setExtent(false);
+        node.setExpand(false);
 
         if(node.isParent()){
             for (int i = 0; i < node.getChild().size() ; i++) {
@@ -119,7 +126,7 @@ public abstract class TreeAdapter<T> extends RecyclerView.Adapter<TreeHolder<T>>
     }
 
     private void showData(int start, TreeNode<T> node){
-        node.setExtent(true);
+        node.setExpand(true);
         if(node.isParent()){
 
             for (TreeNode<T> subNode : node.getChild()){
@@ -140,7 +147,7 @@ public abstract class TreeAdapter<T> extends RecyclerView.Adapter<TreeHolder<T>>
 
     }
 
-    private List<TreeNode<T>> initData(List<T> beans, int level){
+    public List<TreeNode<T>> initData(List<T> beans, int level, boolean isAddToNodes){
         if(this.nodes == null){
             this.nodes = new LinkedList<>();
         }
@@ -155,17 +162,27 @@ public abstract class TreeAdapter<T> extends RecyclerView.Adapter<TreeHolder<T>>
 
             node.setLevel(level);
             node.setHidden(false);
-            node.setExtent(true);
+            node.setExpand(true);
             arr.add(node);
 
-            this.nodes.add(node);
+            if(isAddToNodes){
+                this.nodes.add(node);
+            }
+
             if(this.getChildList(bean)!=null){
-                node.setChild(this.initData(this.getChildList(bean), (level + 1)));
+                node.setChild(this.initData(this.getChildList(bean), (level + 1), isAddToNodes));
             }
 
             this.handlerBean(node);
         }
         return arr;
+    }
+
+    public boolean insertData(int start, List<T> beans, int level){
+        if(this.nodes == null){
+            this.nodes = new LinkedList<>();
+        }
+        return false;
     }
 
     public boolean isExpandAnimation() {

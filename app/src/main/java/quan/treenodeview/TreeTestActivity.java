@@ -31,7 +31,15 @@ public class TreeTestActivity extends AppCompatActivity {
         adapter.setExpandAnimation(false);
         adapter.setListener(new OnTreeNodeClickListener<Bean>() {
             @Override
-            public void onClick(TreeNode<Bean> node, TreeAdapter adapter, int position, TreeNodeExpandState state) {
+            public void onClick(TreeNode<Bean> node, TreeAdapter<Bean> adapter, int position, TreeNodeExpandState state) {
+
+                if(!node.isParent()){
+                    if(node.getChild() == null) {
+                        List<TreeNode<Bean>> subList = adapter.initData(TreeTestActivity.this.initBean(), node.getLevel() + 1, false);
+                        node.setChild(subList);
+                    }
+                    adapter.notifyDataSetChanged();
+                }
 
             }
         });

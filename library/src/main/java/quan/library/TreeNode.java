@@ -12,7 +12,7 @@ public class TreeNode<T> {
     private List<TreeNode<T>> child;
     private T data;
     private boolean isHidden;
-    private boolean isExtent;
+    private boolean isExpand;
 
     public TreeNode(){
     }
@@ -56,24 +56,24 @@ public class TreeNode<T> {
             for (int i = 0; i < child.size(); i++) {
                 TreeNode node = child.get(i);
                 node.setHidden(hidden);
-//                node.setExtent(!hidden);
+//                node.setExpand(!hidden);
             }
         }
 
     }
 
-    public boolean isExtent() {
-        return isExtent;
+    public boolean isExpand() {
+        return isExpand;
     }
 
-    public void setExtent(boolean extent) {
-        isExtent = extent;
+    public void setExpand(boolean expand) {
+        isExpand = expand;
         if(isParent()) {
             for (int i = 0; i < child.size(); i++) {
                 TreeNode node = child.get(i);
 
-                if(!extent){
-                    node.setExtent(false);
+                if(!expand){
+                    node.setExpand(false);
                 }
 
             }
